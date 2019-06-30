@@ -598,7 +598,7 @@ end
 
 function DPSMate:EvalTable(k)
 	k = k or 1
-	return self.RegistredModules[DPSSettings["windows"][k]["CurMode"]]:EvalTable(DPSMateUser[UnitName("player")], k)
+	return self.RegistredModules[DPSSettings["windows"][k]["CurMode"]]:EvalTable(DPSMateUser[(UnitName("player"))], k)
 end
 
 function DPSMate:GetClassColor(class)

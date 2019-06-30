@@ -217,7 +217,7 @@ function DPSMate.Sync:CountVote()
 			local num = GetNumRaidMembers()
 			if num > 0 then
 				for i=1, num-1 do
-					SDM("NORMAL", "DPSMate_SyncTimer"..DPSMate.SYNCVERSION, UnitName("raid"..i)..","..(ceil(i/8)*30 - 30)..",", "RAID")
+					SDM("NORMAL", "DPSMate_SyncTimer"..DPSMate.SYNCVERSION, (UnitName("raid"..i))..","..(ceil(i/8)*30 - 30)..",", "RAID")
 				end
 			end
 			DB.MainUpdate = ceil(num/8)*30 - 30
@@ -379,7 +379,7 @@ DPSMate.Sync.CHAT_MSG_ADDON = function(arg1,arg2,arg3,arg4) -- DB.loaded part? A
 end
 
 DPSMate.Sync.UPDATE_MOUSEOVER_UNIT = function()
-	LastMouseover = UnitName("mouseover")
+	LastMouseover = (UnitName("mouseover"))
 end
 
 GameTooltip.OldSetUnit = GameTooltip.SetUnit
@@ -911,7 +911,7 @@ function DPSMate.Parser:GetTarget()
 	local target = LastDecursive
 	if not target then
 		if UnitIsPlayer("target") then
-			target = UnitName("target")
+			target = (UnitName("target"))
 		else
 			target = LastMouseover
 		end
@@ -970,7 +970,7 @@ DPSMate.Parser.UseAction = function(slot, checkCursor, onSelf)
 	end
 	if aura then
 		local time = GetTime()
-		DB:AwaitAfflicted(player, aura, UnitName("target"), time)
+		DB:AwaitAfflicted(player, aura, (UnitName("target")), time)
 		if DPSMate.Parser.Dispels[aura] then DB:AwaitHotDispel(aura, target, player, time) end
 		DB:AwaitingBuff(player, aura, target, time)
 		DB:AwaitingAbsorbConfirmation(player, aura, target, time)
@@ -988,7 +988,7 @@ DPSMate.Parser.CastSpellByName = function(spellName, onSelf)
 		DPSMate.Parser.SendSpell[spellName] = true
 	end
 	local time = GetTime()
-	DB:AwaitAfflicted(player, spellName, UnitName("target"), time)
+	DB:AwaitAfflicted(player, spellName, (UnitName("target")), time)
 	if DPSMate.Parser.Dispels[spellName] then DB:AwaitHotDispel(spellName, target, player, time) end
 	DB:AwaitingBuff(player, spellName, target, time)
 	DB:AwaitingAbsorbConfirmation(player, spellName, target, time)
@@ -1006,7 +1006,7 @@ DPSMate.Parser.CastSpell = function(spellID, spellbookType)
 		DPSMate.Parser.SendSpell[spellName] = true
 	end
 	local time = GetTime()
-	DB:AwaitAfflicted(player, spellName, UnitName("target"), time)
+	DB:AwaitAfflicted(player, spellName, (UnitName("target")), time)
 	if DPSMate.Parser.Dispels[spellName] then DB:AwaitHotDispel(spellName, target, player, time) end
 	DB:AwaitingBuff(player, spellName, target, time)
 	DB:AwaitingAbsorbConfirmation(player, spellName, target, time)

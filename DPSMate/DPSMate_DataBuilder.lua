@@ -660,7 +660,7 @@ DPSMate.DB.VARIABLES_LOADED = function()
 
 		DPSMate.Sync:OnLoad()
 		
-		player = UnitName("player")
+		player = (UnitName("player"))
 		
 		local frames = {"", "_Absorbs", "_AbsorbsTaken", "_Auras", "_Casts", "_CCBreaker", "_CureDisease", "_CureDiseaseReceived", "_CurePoison", "_CurePoisonReceived", "_DamageTaken", "_DamageTakenTotal", "_DamageTotal", "_Deaths", "_Decurses", "_DecursesReceived", "_Dispels", "_DispelsReceived", "_EDD", "_EDT", "_EHealing", "_EHealingTaken", "_Fails", "_FF", "_FFT", "_Healing", "_HealingTaken", "_Interrupts", "_LiftMagic", "_LiftMagicReceived", "_OHealingTaken", "_Overhealing", "_Procs", "_AbsorbsTakenTotal", "_AbsorbsTotal", "_AurasTotal", "_CastsTotal", "_CCBreakerTotal", "_CureDisease_Total", "_CurePoison_Total", "_Deaths_Total", "_Decurses_Total", "_Dispels_Total", "_EDDTotal", "_EDTTotal", "_EHealingTakenTotal", "_EHealingTotal", "_FailsTotal", "_FFTotal", "_FFTTotal", "_HABTotal", "_HealingTakenTotal", "_HealingTotal", "_Interrupts_Total", "_LiftMagic_Total", "_OverhealingTakenTotal", "_OverhealingTotal", "_ProcsTotal"}
 		for cat, val in pairs(frames) do
@@ -821,7 +821,7 @@ end
 
 DPSMate.DB.PLAYER_TARGET_CHANGED = function()
 	if UnitIsPlayer("target") then
-		local name = UnitName("target")
+		local name = (UnitName("target"))
 		local pet = UnitName("targetpet")
 		local _, class = UnitClass("target")
 		local fac = UnitFactionGroup("target") or ""
@@ -921,7 +921,7 @@ function DPSMate.DB:OnGroupUpdate()
 		end
 	end
 	local pet = UnitName("pet")
-	local name = UnitName("player")
+	local name = (UnitName("player"))
 	self:BuildUser(name, nil)
 	if pet and pet ~= DPSMate.L["unknown"] and pet ~= "" then
 		self:BuildUser(pet, nil)
@@ -1392,7 +1392,7 @@ function DPSMate.DB:EnemyDamage(mode, arr, Duser, Dname, Dhit, Dcrit, Dmiss, Dpa
 	Dname = self:BuildAbility(Dname)
 	
 	if Dname == nil or cause == nil or Duser == nil or Damount == nil then
-		local debug = DPSMate.Debug and DPSMate.Debug:Store("Ab/Cause/Duser/amount: one of them is nil: "..(saveAb or "NONE").."/"..(saveCause or "NONE").."/"..(saveUser or "NONE").."/"..(Damount or "NONE")) or DPSMate:SendMessage("Ab/Cause/Duser/amount: one of them is nil: "..(saveAb or "NONE").."/"..(saveCause or "NONE").."/"..(saveUser or "NONE").."/"..(Damount or "NONE"))
+		local debug = DSPMate.Debug and DPSMate.Debug:Store("Ab/Cause/Duser/amount: one of them is nil: "..(saveAb or "NONE").."/"..(saveCause or "NONE").."/"..(saveUser or "NONE").."/"..(Damount or "NONE")) or DPSMate:SendMessage("Ab/Cause/Duser/amount: one of them is nil: "..(saveAb or "NONE").."/"..(saveCause or "NONE").."/"..(saveUser or "NONE").."/"..(Damount or "NONE"))
 		return
 	end
 	
@@ -2389,7 +2389,7 @@ function DPSMate.DB:OnUpdate()
 					if not DPSMate.DB.KTMHOOK[powertype] then
 						DPSMate.DB.KTMHOOK[powertype] = {}
 					end
-					local target = UnitName("target") or player
+					local target = (UnitName("target")) or player
 					tinsert(DPSMate.DB.KTMHOOK[powertype], {target, klhtm.combat.event.threat})
 					DPSMate.DB:Threat(player, powertype, target, klhtm.combat.event.threat, 1)
 				end

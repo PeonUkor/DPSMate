@@ -10,6 +10,10 @@ local DB = DPSMate.DB
 ----------------------------------------------------------------------------------
 --------------                    Init                              --------------                                  
 ----------------------------------------------------------------------------------
+local function Print(msg)
+	msg = "Send To Dog on Discord: " .. msg
+	DEFAULT_CHAT_FRAME:AddMessage(msg, 1, 1, 1, 1, 5)
+end
 local Kicks = {}
 local DmgProcs = {}
 local CC = {}
@@ -480,7 +484,9 @@ function DPSMate.Parser:SelfHits(msg)
 			elseif prefixCase == "glancing" then glance = 1; hit=0; crit=0
 			else block = 1 end -- We could do more with that info
 		end
-		
+		if Player == nil or amount == nil then
+			Print(msg)
+		end
 		DB:EnemyDamage(true, nil, Player, AAttack, hit, crit, 0, 0, 0, 0, amount, target, block, 0) -- glance?
 		DB:DamageDone(Player, AAttack, hit, crit, 0, 0, 0, 0, amount, glance, block)
 		if self.TargetParty[target] then DB:BuildFail(1, target, Player, AAttack, amount);DB:DeathHistory(target, Player, AAttack, amount, hit, crit, 0, 0) end
@@ -488,6 +494,9 @@ function DPSMate.Parser:SelfHits(msg)
 	elseif choice == 3 then
 		i, j = strfind(msg, " health.", k, true)
 		local amount = tnbr(strsub(msg, k, i-1))
+		if Player == nil or amount == nil then
+			Print(msg)
+		end
 		DB:DamageTaken(Player, "Falling", 1, 0, 0, 0, 0, 0, amount, "Environment", 0, 0)
 		DB:DeathHistory(Player, "Environment", "Falling", amount, 1, 0, 0, 0)
 		return
@@ -497,10 +506,16 @@ function DPSMate.Parser:SelfHits(msg)
 		k = j+1
 		i, j = strfind(msg, "lava", k, true)
 		if i then
+			if Player == nil or amount == nil then
+				Print(msg)
+			end
 			DB:DamageTaken(Player, "Lava", 1, 0, 0, 0, 0, 0, amount, "Environment", 0, 0)
 			DB:DeathHistory(Player, "Environment", "Lava", amount, 1, 0, 0, 0)
 			DB:AddSpellSchool("Lava","fire")
 		else -- Slime
+			if Player == nil or amount == nil then
+				Print(msg)
+			end
 			DB:DamageTaken(Player, "Slime", 1, 0, 0, 0, 0, 0, amount, "Environment", 0, 0)
 			DB:DeathHistory(Player, "Environment", "Slime", amount, 1, 0, 0, 0)
 		end
@@ -508,6 +523,9 @@ function DPSMate.Parser:SelfHits(msg)
 	elseif choice == 5 then
 		i, j = strfind(msg, " points ", k, true)
 		local amount = tnbr(strsub(msg, k, i-1))
+		if Player == nil or amount == nil then
+			Print(msg)
+		end
 		DB:DamageTaken(Player, "Fire", 1, 0, 0, 0, 0, 0, amount, "Environment", 0, 0)
 		DB:DeathHistory(Player, "Environment", "Fire", amount, 1, 0, 0, 0)
 		DB:AddSpellSchool("Fire","fire")
@@ -515,6 +533,9 @@ function DPSMate.Parser:SelfHits(msg)
 	else
 		i, j = strfind(msg, " health.", k, true)
 		local amount = tnbr(strsub(msg, k, i-1))
+		if Player == nil or amount == nil then
+			Print(msg)
+		end
 		DB:DamageTaken(Player, "Drowning", 1, 0, 0, 0, 0, 0, amount, "Environment", 0, 0)
 		DB:DeathHistory(Player, "Environment", "Drowning", amount, 1, 0, 0, 0)
 		return
@@ -536,6 +557,9 @@ function DPSMate.Parser:SelfMisses(msg)
 	if choice == 1 then
 		i, j = strfind(msg, ".", k, true)
 		local target = strsub(msg, k, i-1)
+		if Player == nil then
+			Print(msg)
+		end
 		DB:EnemyDamage(true, DPSMateEDT, Player, AAttack, 0, 0, 1, 0, 0, 0, 0, target, 0, 0)
 		DB:DamageDone(Player, AAttack, 0, 0, 1, 0, 0, 0, 0, 0, 0)
 		return
@@ -548,6 +572,9 @@ function DPSMate.Parser:SelfMisses(msg)
 			if choice == 2 then dodge = 1
 			elseif choice == 3 then parry = 1
 			else block = 1 end -- Contains deflect(?)
+			if Player == nil then
+				Print(msg)
+			end
 			DB:EnemyDamage(true, nil, Player, AAttack, 0, 0, 0, parry, dodge, 0, 0, nextword, block, 0)
 			DB:DamageDone(Player, AAttack, 0, 0, 0, parry, dodge, 0, 0, 0, block)
 		end
@@ -602,6 +629,7 @@ function DPSMate.Parser:SelfSpellDMG(msg)
 		
 		if Kicks[ability] then DB:AssignPotentialKick(Player, ability, target, GetTime()) end
 		if DmgProcs[ability] then DB:BuildBuffs(Player, Player, ability, true) end
+		if Player == nil or amount == nil then Print(msg) end
 		DB:EnemyDamage(true, nil, Player, ability, hit, crit, 0, 0, 0, 0, amount, target, block, 0)
 		DB:DamageDone(Player, ability, hit, crit, 0, 0, 0, 0, amount, 0, block)
 		if self.TargetParty[target] then DB:BuildFail(1, target, Player, ability, amount);DB:DeathHistory(target, Player, ability, amount, hit, crit, 0, 0) end
@@ -614,12 +642,15 @@ function DPSMate.Parser:SelfSpellDMG(msg)
 		local target = strsub(msg, k, j-1);
 		
 		if case == "dodged" then
+			if Player == nil then Print(msg) end
 			DB:EnemyDamage(true, nil, Player, ability, 0, 0, 0, 0, 1, 0, 0, target, 0, 0)
 			DB:DamageDone(Player, ability, 0, 0, 0, 0, 1, 0, 0, 0, 0)
 		elseif case == "blocked" then
+			if Player == nil then Print(msg) end
 			DB:EnemyDamage(true, nil, Player, ability, 0, 0, 0, 0, 0, 0, 0, target, 1, 0)
 			DB:DamageDone(Player, ability, 0, 0, 0, 0, 0, 0, 0, 0, 1)
 		else
+			if Player == nil then Print(msg) end
 			DB:EnemyDamage(true, nil, Player, ability, 0, 0, 0, 0, 0, 1, 0, target, 0, 0)
 			DB:DamageDone(Player, ability, 0, 0, 0, 0, 0, 1, 0, 0, 0)
 		end
@@ -627,18 +658,21 @@ function DPSMate.Parser:SelfSpellDMG(msg)
 	elseif choice == 4 then
 		i,j = strfind(msg, ".", k, true);
 		local target = strsub(msg, k, j-1);
+		if Player == nil then Print(msg) end
 		DB:EnemyDamage(true, nil, Player, ability, 0, 0, 0, 1, 0, 0, 0, target, 0, 0)
 		DB:DamageDone(Player, ability, 0, 0, 0, 1, 0, 0, 0, 0, 0)
 		return
 	elseif choice == 5 then
 		i,j = strfind(msg, ".", k, true);
 		local target = strsub(msg, k, j-1);
+		if Player == nil then Print(msg) end
 		DB:EnemyDamage(true, nil, Player, ability, 0, 0, 1, 0, 0, 0, 0, target, 0, 0)
 		DB:DamageDone(Player, ability, 0, 0, 1, 0, 0, 0, 0, 0, 0)
 		return
 	elseif choice == 6 then
 		i,j = strfind(msg, ".", k, true);
 		local target = strsub(msg, k, j-1);
+		if Player == nil then Print(msg) end
 		DB:Absorb(ability, target, Player)
 		return
 	elseif choice == 7 then
@@ -738,6 +772,7 @@ function DPSMate.Parser:PeriodicDamage(msg)
 		source = strsub(msg, 1, i-1)
 		i,j = strfind(msg, ".", k, true)
 		local target = strsub(msg, k, i-1)
+		if Player == nil or amount==nil then Print(msg) end
 		DB:EnemyDamage(true, nil, source, ability.."(Periodic)", 0, 0, 0, 0, 0, 1, amount, target, 0, 0)
 		DB:DamageDone(source, ability.."(Periodic)", 0, 0, 0, 0, 0, 1, amount, 0, 0)
 		return
@@ -1683,6 +1718,7 @@ function DPSMate.Parser:SpellSelfBuff(msg)
 		
 		if target=="you" then target=Player end
 		local overheal = self:GetOverhealByName(amount, target)
+		if target == nil or amount==nil then Print(msg) end
 		DB:HealingTaken(0, nil, target, ability, hit, crit, amount, Player)
 		DB:HealingTaken(1, nil, target, ability, hit, crit, amount-overheal, Player)
 		DB:Healing(0, nil, Player, ability, hit, crit, amount-overheal, target)

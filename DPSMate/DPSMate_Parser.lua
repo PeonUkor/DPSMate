@@ -478,7 +478,7 @@ DPSMate.Parser.Kicks = {
 	["Tidal Charm"] = true,
 	["Reckless Charge"] = true,
 }
-DPSMate.Parser.player = UnitName("player")
+DPSMate.Parser.player = (UnitName("player"))
 DPSMate.Parser.playerclass = nil
 
 -- Local Variables
@@ -493,7 +493,7 @@ local GetPlayerBuff = GetPlayerBuff
 -- Begin Functions
 
 function DPSMate.Parser:OnLoad()
-	self.player, self.realm = UnitName("player")
+	self.player = (UnitName("player"))
 	_,playerclass = UnitClass("player")
 	DPSMate.DB:BuildUser(self.player, strlower(playerclass))
 	DPSMateUser[self.player][2] = strlower(playerclass)
@@ -515,9 +515,9 @@ local UnitName = UnitName
 function DPSMate.Parser:GetUnitByName(target)
 	local unit = self.TargetParty[target]
 	if not unit then
-		if target==UnitName("player") then
+		if target==(UnitName("player")) then
 			unit="player"
-		elseif target==UnitName("target") then
+		elseif target==(UnitName("target")) then
 			unit="target"
 		end
 	end
@@ -550,16 +550,16 @@ function DPSMate.Parser:AssociateShaman(name, old, update)
 			for i=1, tnum do
 				_, _, c = GetRaidRosterInfo(i)
 				if UnitClass("raid"..i)==DPSMate.L["shaman"] then
-					subGRP[c] = UnitName("raid"..i)
+					subGRP[c] = (UnitName("raid"..i))
 				end
-				PSGRP[UnitName("raid"..i)] = c
+				PSGRP[(UnitName("raid"..i))] = c
 			end
 		else
 			for i=1, tnum do
 				if UnitClass("party"..i)==DPSMate.L["shaman"] then
-					subGRP[1] = UnitName("party"..i)
+					subGRP[1] = (UnitName("party"..i))
 				end
-				PSGRP[UnitName("party"..i)] = 1
+				PSGRP[(UnitName("party"..i))] = 1
 			end
 			PSGRP[name] = 1
 		end
